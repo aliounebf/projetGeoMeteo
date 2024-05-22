@@ -1,11 +1,17 @@
 <!-- <div class="container">
     <div class="row"> -->
 <div class="col-6">
-    <p *ngIf="fullName">{{ fullName }}</p>
+    <p *ngIf="fullName">{{ fullName }}
+        <button (click)="signOut()" class="btn btn-danger">Se déconnecter</button>
+
+      </p>
+
+
     <button *ngIf="!fullName" class="btn btn-primary" (click)="signIn()">
         Sign-in
     </button>
-
 </div>
+
+
 <!-- </div>
 </div> -->

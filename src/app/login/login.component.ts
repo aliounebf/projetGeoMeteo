@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { GeolocalisationComponent } from '../geolocalisation/geolocalisation.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,7 @@ export class LoginComponent implements OnInit {
   longitude: number | undefined;
   timestamp: Date | undefined;
 
-  constructor(private authService: AuthService) {}
+  constructor(public authService: AuthService, public router: Router) {}
 
   signIn() {
     this.authService
@@ -20,6 +21,8 @@ export class LoginComponent implements OnInit {
       .then((credential) => {
         console.log('Connecté avec succès', credential.user);
         localStorage.setItem('user', JSON.stringify(credential.user));
+        window.location.reload();
+
       })
       .catch((error) => {
         console.log('Erreur de connexion', error);
@@ -29,10 +32,24 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     const isLogged = JSON.parse(localStorage.getItem('user') || '');
+    if (isLogged) {
+
+      console.log('Utilisateur connecté:', isLogged);
+    }
     this.fullName = isLogged.displayName;
+
   }
 
   signOut() {
-    this.authService.signOut();
+    this.authService.signOut()
+      .then(() => {
+        localStorage.removeItem('user');
+        this.router.navigate(['/']);
+        window.location.reload()
+        console.log('Déconnecté avec succès');
+      })
+      .catch((error) => {
+        console.error('Erreur de déconnexion', error);
+      });
   }
 }
